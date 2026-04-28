@@ -1,6 +1,7 @@
 #!/bin/python3
 # Filters possibly objectionable content based on keywords; probably over-filters.
-import json, os
+import json
+import os
 
 merged_json = {}
 filter_out_words = []

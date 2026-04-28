@@ -157,7 +157,7 @@ npm run build:linux
 
 ## License
 
-MIT © [Your Name]
+MIT © [Skye]
 
 ---
 
