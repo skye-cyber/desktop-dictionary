@@ -1,0 +1,17 @@
+// tsconfig.core.json - Renderer (React/TSX)
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    //"outDir": "./dist/core",
+    "rootDir": "./src/core",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "noUnusedLocals": false,
+    "declaration": true,
+    "declarationDir": "./src/core/types"
+  },
+  "include": ["src/core/**/*"],
+  "exclude": ["src/core/types/**/*"]
+}

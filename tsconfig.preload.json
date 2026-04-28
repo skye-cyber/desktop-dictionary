@@ -1,0 +1,18 @@
+// tsconfig.main.json - Main process (CommonJS)
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    //"outDir": "./dist/main",
+    "rootDir": "./src/preload",
+    "lib": ["es2021", "DOM"],
+    "types": ["node", "electron"],
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "noUnusedLocals": false,
+    "declarationDir": "./src/preload/types"
+  },
+  "include": ["src/preload/**/*"],
+  "exclude": ["src/preload/types/**/*", "types.ts"]
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+dist/
+build/
+assets/dictionary.db
+release/
+*.db-journal
+*.db-wal
+*.db-shm
