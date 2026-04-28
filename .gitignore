@@ -10,3 +10,5 @@ release/
 *.db-journal
 *.db-wal
 *.db-shm
+*.map
+src/main/**/*.js

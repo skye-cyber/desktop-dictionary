@@ -27,8 +27,7 @@
      "package:electron:linux": "electron-builder --linux",
      "clean": "rimraf dist",
      "type-check": "tsc --noEmit",
-     "styles": "tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --minify",
-     "postinstall": "./postinstall.sh"
+     "styles": "tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --minify"
   },
   "keywords": ["dictionary", "electron", "desktop"],
   "author": {

@@ -71,10 +71,10 @@ app.on('will-quit', () => {
 });
 
 // IPC handlers
-ipcMain.handle('search-word', async (event, query: string) => {
+ipcMain.handle('search-word', async (_, query: string) => {
     return dictionaryService.search(query);
 });
 
-ipcMain.handle('get-word-details', async (event, word: string) => {
+ipcMain.handle('get-word-details', async (_, word: string) => {
     return dictionaryService.getDetails(word);
 });

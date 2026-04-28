@@ -27,5 +27,5 @@ for key in combined_json:
     meanings_list = list(meanings.values())
     element["MEANINGS"] = meanings_list
 
-output_file = open(os.path.join("processed", "merged.json"), "w")
-output_file.write(json.dumps(combined_json))
+with open(os.path.join("processed", "merged.json"), "w") as f:
+    json.dump(combined_json, f, indent=2)

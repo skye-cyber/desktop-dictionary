@@ -2,8 +2,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
-    //"outDir": "./dist/main",
+    "module": "Node16",
     "rootDir": "./src/main",
     "lib": ["es2021", "DOM"],
     "types": ["node", "electron"],
