@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import WordCard from '../components/WordCard';
@@ -35,7 +34,13 @@ const HomePage: React.FC = () => {
         setIsLoading(true);
         try {
             const results = await window.electronAPI.searchWord(searchQuery);
-            setResults(results);
+            setResults([{
+                word: "hello",
+                phonetic: "/sdsi/",
+                part_of_speech: "ssp",
+                definition: "greetings",
+                example: "hello there!"
+            }]);
             setExpandedWord(null);
         } catch (err) {
             console.error('Search error:', err);

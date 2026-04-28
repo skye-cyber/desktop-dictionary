@@ -12,3 +12,4 @@ release/
 *.db-shm
 *.map
 src/main/**/*.js
+src/main/**/*.d.ts

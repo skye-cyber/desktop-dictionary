@@ -1,35 +1,39 @@
- {
+{
   "name": "deskdict",
   "version": "1.0.0",
   "description": "A lightweight desktop dictionary app",
-  "main": "src/main.js",
+  "main": "src/main/index.js",
   "scripts": {
-     "test": "echo \"INFO: no test specified\" && exit 0",
-     "tailwind:build": "NODE_ENV=production npx tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css -minify",
-     "tailwind:watch": "npx tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --watch",
-     "preview": "vite preview",
-     "dev": "concurrently \"npm:dev:*\"",
-     "dev:react": "vite",
-     "dev:electron": "electron .",
-     "dev:types": "tsc --noEmit --watch",
-     "dev:styles": "tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --watch",
-     "dev:main": "tsc -p tsconfig.main.json --watch",
-     "build": "npm run clean && npm run type-check && npm run build:all",
-     "build:all": "npm-run-all build:main build:preload build:core build:react",
-     "build:main": "tsc -p tsconfig.main.json",
-     "build:core": "tsc -p tsconfig.core.json",
-     "build:ui": "tsc -p tsconfig.ui.json",
-     "build:react": "vite build",
-     "package": "npm run build && npm run package:electron",
-     "package:electron": "electron-builder",
-     "package:electron:win": "electron-builder --win",
-     "package:electron:mac": "electron-builder --mac",
-     "package:electron:linux": "electron-builder --linux",
-     "clean": "rimraf dist",
-     "type-check": "tsc --noEmit",
-     "styles": "tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --minify"
+    "test": "echo \"INFO: no test specified\" && exit 0",
+    "tailwind:build": "NODE_ENV=production npx tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --minify",
+    "tailwind:watch": "npx tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --watch",
+    "preview": "vite preview",
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:react": "vite",
+    "dev:electron": "electron .",
+    "dev:types": "tsc --noEmit --watch",
+    "dev:styles": "tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --watch",
+    "dev:main": "tsc -p tsconfig.main.json --watch",
+    "build": "npm run clean && npm run type-check && npm run build:all",
+    "build:all": "npm-run-all build:main build:preload build:core build:react",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:core": "tsc -p tsconfig.core.json",
+    "build:ui": "tsc -p tsconfig.ui.json",
+    "build:react": "vite build",
+    "package": "npm run build && npm run package:electron",
+    "package:electron": "electron-builder",
+    "package:electron:win": "electron-builder --win",
+    "package:electron:mac": "electron-builder --mac",
+    "package:electron:linux": "electron-builder --linux",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
+    "styles": "tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --minify"
   },
-  "keywords": ["dictionary", "electron", "desktop"],
+  "keywords": [
+    "dictionary",
+    "electron",
+    "desktop"
+  ],
   "author": {
     "name": "Wambua Mwikya aka Skye",
     "email": "swskye17@gmail.com"
@@ -45,8 +49,22 @@
     "tailwindcss": "^3.4.19"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
     "better-sqlite3": "^12.0.0",
-    "vite": "^7.1.12"
+    "browser": "^0.2.6",
+    "browserify-fs": "^1.0.0",
+    "browserify-zlib": "^0.2.0",
+    "child-process-promise": "^2.2.1",
+    "compression-webpack-plugin": "^12.0.0",
+    "crypto-browserify": "^3.12.1",
+    "framer-motion": "^12.38.0",
+    "process": "^0.11.10",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-icons": "^5.6.0",
+    "vite": "^8.0.10",
+    "vite-plugin-node-polyfills": "^0.26.0",
+    "vm-browserify": "^1.1.2"
   },
   "files": [
     "README.md",
@@ -66,17 +84,17 @@
     "appId": "com.deskdict.dictionary",
     "productName": "deskdict",
     "directories": {
-        "output": "dist"
+      "output": "dist"
     },
     "files": [
-        "src/**/*",
-        "assets/**/*",
-        "node_modules/better-sqlite3/**/*"
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/better-sqlite3/**/*"
     ],
     "extraResources": [
       {
-          "from": "assets/dictionary.db",
-          "to": "dictionary.db"
+        "from": "assets/dictionary.db",
+        "to": "dictionary.db"
       },
       {
         "from": "src/assets/",
@@ -91,112 +109,114 @@
       }
     ],
     "mac": {
-        "icon": "src/assets/deskdict.icns",
-        "category": "public.app-category.productivity",
-        "target": [
-          {
-            "target": "dmg",
-            "arch": [
-              "x64",
-              "arm64"
-            ]
-          }
-        ],
-        "hardenedRuntime": false,
-        "gatekeeperAssess": false,
-        "identity": null
-      },
+      "icon": "src/assets/deskdict.icns",
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null
+    },
     "dmg": {
-        "artifactName": "${productName}-${version}-${arch}.dmg"
-      },
+      "artifactName": "${productName}-${version}-${arch}.dmg"
+    },
     "win": {
-        "icon": "src/assets/deskdict.ico",
-        "target": [
-          {
-            "target": "nsis",
-            "arch": [
-              "x64",
-              "ia32",
-              "arm64"
-            ]
-          },
-          {
-            "target": "portable",
-            "arch": [
-              "x64",
-              "arm64"
-            ]
-          },
-          {
-            "target": "msi",
-            "arch": [
-              "x64",
-              "arm64"
-            ]
-          }
-        ]
-      },
+      "icon": "src/assets/deskdict.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
     "nsis": {
-        "oneClick": false,
-        "perMachine": true,
-        "allowElevation": true,
-        "createDesktopShortcut": true,
-        "createStartMenuShortcut": true,
-        "allowToChangeInstallationDirectory": true,
-        "license": "LICENSE",
-        "artifactName": "${productName}-${version}-${arch}.${ext}"
-      },
-      "portable": {
-        "artifactName": "${productName}-portable-${version}-${arch}.${ext}"
-      },
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "allowToChangeInstallationDirectory": true,
+      "license": "LICENSE",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-portable-${version}-${arch}.${ext}"
+    },
     "linux": {
-        "target": [
-          {
-            "target": "AppImage",
-            "arch": [
-              "x64",
-              "armv7l",
-              "arm64"
-            ]
-          },
-          {
-            "target": "deb",
-            "arch": [
-              "x64",
-              "arm64"
-            ]
-          },
-          {
-            "target": "snap",
-            "arch": [
-              "x64"
-            ]
-          }
-        ],
-        "category": "Utility",
-        "icon": "src/icons",
-        "maintainer": "Skye <swskye17@gmail.com>",
-        "synopsis": "Desktop Distionary",
-        "description": "AI for all tasks, chat, ocr, image-generation, document analysis ..."
-      },
-      "appImage": {
-        "artifactName": "${productName}-${version}-${arch}.AppImage"
-      },
-      "deb": {
-        "priority": "optional",
-        "depends": [
-          "libappindicator1",
-          "libnotify-bin",
-          "libsecret-1-dev"
-        ],
-        "artifactName": "${productName}_${version}_${arch}.deb"
-      },
-      "snap": {
-        "summary": "Desktop Distionary Snap Package",
-        "grade": "stable",
-        "confinement": "classic",
-        "plugs": ["audio-playback"],
-        "artifactName": "${productName}_${version}_${arch}.snap"
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "armv7l",
+            "arm64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "snap",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Utility",
+      "icon": "src/icons",
+      "maintainer": "Skye <swskye17@gmail.com>",
+      "synopsis": "Desktop Distionary",
+      "description": "AI for all tasks, chat, ocr, image-generation, document analysis ..."
+    },
+    "appImage": {
+      "artifactName": "${productName}-${version}-${arch}.AppImage"
+    },
+    "deb": {
+      "priority": "optional",
+      "depends": [
+        "libappindicator1",
+        "libnotify-bin",
+        "libsecret-1-dev"
+      ],
+      "artifactName": "${productName}_${version}_${arch}.deb"
+    },
+    "snap": {
+      "summary": "Desktop Distionary Snap Package",
+      "grade": "stable",
+      "confinement": "classic",
+      "plugs": [
+        "audio-playback"
+      ],
+      "artifactName": "${productName}_${version}_${arch}.snap"
     }
   }
 }

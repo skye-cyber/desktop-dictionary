@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiStar, FiZap } from 'react-icons/fi';
 
 interface EmptyStateProps {
     query: string;

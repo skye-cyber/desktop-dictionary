@@ -1,34 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-[100vh] w-[100vw] max-h-[100vh]">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
-  <title>Dictionary</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>DeskDict</title>
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Dictionary</h1>
-      <div class="search-box">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Type a word..."
-          autocomplete="off"
-          autofocus
-        >
-        <button id="clearBtn" class="hidden">×</button>
-      </div>
-    </header>
-
-    <main id="results">
-      <div class="empty-state">
-        <p>Start typing to search definitions</p>
-      </div>
-    </main>
-  </div>
-
-  <script src="app.js"></script>
+<body id="main" class="size-full bg-white dark:bg-vimdark-100 overflow-hidden">
+    <!-- React Root -->
+    <main id="react-root" class="w-full h-full bg-white dark:bg-vimdark-100 mt-0"></main>
+    <!-- React Build Script -->
+    <script type="module" src="src/ui/main.tsx"></script>
 </body>
 </html>
