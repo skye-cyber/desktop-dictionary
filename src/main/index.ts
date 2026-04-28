@@ -27,10 +27,11 @@ setAppIcon()
 
 function createWindow(): BrowserWindow {
     mainWindow = new BrowserWindow({
-        width: 900,
-        height: 700,
+        width: 800,
+        height: 600,
         minWidth: 600,
         minHeight: 400,
+        icon: iconPath,
         webPreferences: {
             preload: path.join(__dirname, 'preload', 'preload.js'),
             contextIsolation: true,

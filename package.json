@@ -76,6 +76,7 @@
     "src/main/**/*",
     "src/preload/**/*",
     "public/**/*",
+    "!icons/",
     "!dist/",
     "!node_modules/",
     "!true"

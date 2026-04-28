@@ -13,3 +13,4 @@ release/
 *.map
 src/main/**/*.js
 src/main/**/*.d.ts
+icons/

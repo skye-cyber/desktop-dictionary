@@ -1,0 +1,216 @@
+#!/bin/bash
+
+# sudo apt install -y imagemagick icnsutils
+#!/bin/bash
+
+# generate-linux-icons.sh
+
+set -euo pipefail
+
+# Configuration
+base_image_name="deskdict"
+base_image_path="../src/assets/${base_image_name}.png"
+icons_output_dir="../icons"
+icon_dir="../icons"
+output_dir="../src/assets"
+sizes=(16 32 48 64 128 256 512 1024)
+
+# Ensure directories exist
+# mkdir -p "$icons_output_dir" "$output_dir" "$output_dir/drafts"
+
+# Check base image exists
+if [[ ! -f "$base_image_path" ]]; then
+    echo "❌ Base image not found: $base_image_path"
+    exit 1
+fi
+
+# Function: Generate PNG icons at various sizes
+generate_icons() {
+    echo "Generating PNG icons..."
+    for size in "${sizes[@]}"; do
+        output_file="${icons_output_dir}/${size}x${size}.png"
+        if convert "$base_image_path" -resize "${size}x${size}" "$output_file" 2>/dev/null; then
+            echo "✔️  Created: $output_file"
+        else
+            echo "❌ Failed to create icon at ${size}x${size}"
+        fi
+    done
+    echo -e "\n🎉 Linux icon set (flat structure) generation complete!"
+}
+
+# Function: Create .icns file (macOS icon format)
+create_icns() {
+    echo "Creating .icns file..."
+
+    # Create temporary iconset directory
+    iconset_dir=$(mktemp -d)
+
+    # OS type mapping for iconset
+    declare -A os_type_map=(
+        [16]="icon_16x16"
+        [32]="icon_32x32"
+        [64]="icon_64x64"
+        [128]="icon_128x128"
+        [256]="icon_256x256"
+        [512]="icon_512x512"
+        [1024]="icon_1024x1024"
+    )
+
+    for size in "${sizes[@]}"; do
+        # Skip 48 for ICNS (not supported)
+        if [[ "$size" -eq 48 ]]; then
+            echo "⚠️ Skipping unsupported size: ${size}x${size} for ICNS"
+            continue
+        fi
+
+        png_path="${icon_dir}/${size}x${size}.png"
+        if [[ ! -f "$png_path" ]]; then
+            echo "⚠️ Skipping missing file: $png_path"
+            continue
+        fi
+
+        os_type="${os_type_map[$size]:-}"
+        if [[ -z "$os_type" ]]; then
+            echo "⚠️ Unsupported size: ${size}x${size}"
+            continue
+        fi
+
+        # Copy to iconset with proper naming
+        cp "$png_path" "${iconset_dir}/${os_type}.png"
+
+        # Create @2x versions for retina
+        if [[ "$size" -eq 32 ]]; then
+            cp "$png_path" "${iconset_dir}/icon_16x16@2x.png"
+        elif [[ "$size" -eq 64 ]]; then
+            cp "$png_path" "${iconset_dir}/icon_32x32@2x.png"
+        elif [[ "$size" -eq 128 ]]; then
+            cp "$png_path" "${iconset_dir}/icon_64x64@2x.png"
+        elif [[ "$size" -eq 256 ]]; then
+            cp "$png_path" "${iconset_dir}/icon_128x128@2x.png"
+        elif [[ "$size" -eq 512 ]]; then
+            cp "$png_path" "${iconset_dir}/icon_256x256@2x.png"
+        elif [[ "$size" -eq 1024 ]]; then
+            cp "$png_path" "${iconset_dir}/icon_512x512@2x.png"
+        fi
+    done
+
+    # Use iconutil to create .icns (macOS only)
+    # For Linux, use png2icns or create manually
+    if command -v iconutil &>/dev/null; then
+        iconutil -c icns "$iconset_dir" -o "${output_dir}/${base_image_name}.icns"
+        echo "✅ .icns file created at: ${output_dir}/${base_image_name}.icns"
+    elif command -v png2icns &>/dev/null; then
+        # Linux alternative using libicns
+        png2icns "${output_dir}/${base_image_name}.icns" \
+            "${iconset_dir}/icon_16x16.png" \
+            "${iconset_dir}/icon_32x32.png" \
+            "${iconset_dir}/icon_128x128.png" \
+            "${iconset_dir}/icon_256x256.png" \
+            "${iconset_dir}/icon_512x512.png" \
+            "${iconset_dir}/icon_1024x1024.png" 2>/dev/null || true
+        echo "✅ .icns file created at: ${output_dir}/${base_image_name}.icns"
+    else
+        echo "⚠️ No ICNS creation tool found (install libicns-utils or run on macOS)"
+    fi
+
+    # Cleanup
+    rm -rf "$iconset_dir"
+}
+
+# Function: Create .ico file (Windows icon format)
+create_ico() {
+    echo "Creating .ico file..."
+
+    # Build list of existing PNG files
+    ico_files=()
+    for size in "${sizes[@]}"; do
+        png_path="${icon_dir}/${size}x${size}.png"
+        if [[ -f "$png_path" ]]; then
+            ico_files+=("$png_path")
+        fi
+    done
+
+    if [[ ${#ico_files[@]} -eq 0 ]]; then
+        echo "❌ No icon files found for .ico creation"
+        return 1
+    fi
+
+    if convert "${ico_files[@]}" "${output_dir}/${base_image_name}.ico"; then
+        echo "✅ Created .ico file: ${output_dir}/${base_image_name}.ico"
+    else
+        echo "❌ Failed to create .ico file"
+        return 1
+    fi
+}
+
+# Function: Extract images from .icns file
+extract_images() {
+    local type="${1:-icns}"
+    local icns_file="${output_dir}/${base_image_name}.${type}"
+
+    if [[ ! -f "$icns_file" ]]; then
+        echo "❌ File not found: $icns_file"
+        return 1
+    fi
+
+    echo "Extracting images from ${icns_file}..."
+
+    # Filter sizes (skip 48 for ICNS)
+    local valid_sizes=()
+    for size in "${sizes[@]}"; do
+        if [[ "$type" == "icns" && "$size" -eq 48 ]]; then
+            continue
+        fi
+        valid_sizes+=("$size")
+    done
+
+    # mkdir -p "${output_dir}/drafts"
+
+    for size in "${valid_sizes[@]}"; do
+        # output_file="${output_dir}/drafts/${size}x${size}.png"
+
+        if convert "${icns_file}[${size}x${size}]" "$output_file" 2>/dev/null; then
+            echo "✔️  Extracted ${size}x${size} → $output_file"
+        else
+            echo "❌ Failed to extract ${size}x${size}"
+        fi
+    done
+}
+
+# Main execution
+init() {
+    local what="${1:-all}"
+
+    # Ensure output directory exists
+    mkdir -p "$output_dir"
+
+    case "$what" in
+        all)
+            generate_icons
+            create_icns
+            create_ico
+            ;;
+        ico)
+            create_ico
+            ;;
+        icns)
+            create_icns
+            ;;
+        extract)
+            extract_images
+            ;;
+        *)
+            create_ico
+            create_icns
+            ;;
+    esac
+}
+
+# Parse command line argument
+scope="${1:-all}"
+
+# Run
+init "$scope"
+
+# Uncomment to extract images instead:
+# extract_images
