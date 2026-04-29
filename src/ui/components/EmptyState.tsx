@@ -3,10 +3,9 @@ import { FiSearch, FiStar, FiZap } from 'react-icons/fi';
 
 interface EmptyStateProps {
     query: string;
-    darkMode: boolean;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({ query, darkMode }) => {
+const EmptyState: React.FC<EmptyStateProps> = ({ query }) => {
     if (query) {
         return (
             <div className="text-center py-12">

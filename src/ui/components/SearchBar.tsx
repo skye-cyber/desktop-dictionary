@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiX } from 'react-icons/fi';
 
@@ -6,19 +6,27 @@ interface SearchBarProps {
     query: string;
     onSearch: (value: string) => void;
     onClear: () => void;
-    darkMode: boolean;
+    onType: (value: string)=> void
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ query, onSearch, onClear, darkMode }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ query, onSearch, onType, onClear }) => {
     const searchInputRef = useRef<HTMLInputElement>(null);
+    const [searchPhrase, setSearchPhrase] = useState<string|null>(null)
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onSearch(e.target.value);
+    const onSearchSubmit = ()=> {
+        if(!searchPhrase) return
+        onSearch(searchPhrase)
     };
+    const onClearSearch=()=>{
+        (searchInputRef.current as HTMLInputElement).value = ''
+        onClear()
+    }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Escape') {
-            onClear();
+            onClearSearch()
+        }else if(e.key==='Enter' || e.ctrlKey && e.key.toLocaleLowerCase()==='k'){
+            onSearchSubmit()
         }
     };
 
@@ -30,15 +38,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ query, onSearch, onClear, darkMod
             <input
                 ref={searchInputRef}
                 type="text"
-                value={query}
-                onChange={handleChange}
+                defaultValue={query}
+                onChange={(e)=> {
+                    setSearchPhrase(e.target.value)
+                    onType(e.target.value)
+                }}
                 onKeyDown={handleKeyDown}
                 placeholder="Search for words... (Ctrl+K)"
-                className={`w-full pl-10 pr-10 py-3 rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    darkMode
-                        ? 'bg-vimdark-300 border-vimdark-500 text-white'
-                        : 'bg-white border-gray-300 text-gray-900'
-                }`}
+                className="w-full pl-10 pr-10 py-3 rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white border-gray-300 text-gray-900 dark:bg-vimdark-300 dark:border-vimdark-500 dark:text-white
+                "
             />
             <AnimatePresence>
                 {query && (
@@ -47,7 +55,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ query, onSearch, onClear, darkMod
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
-                        onClick={onClear}
+                        onClick={onClearSearch}
                         className="absolute inset-y-0 right-0 pr-3 flex items-center"
                         title="Clear search"
                     >

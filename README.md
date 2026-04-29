@@ -4,14 +4,14 @@ A modern, lightweight desktop dictionary built with Electron, TypeScript, and JS
 
 ## Features
 
-- ⚡ **Fast JSON-based search** with debouncing and fuzzy matching
-- 🎨 **Vim-inspired dark theme** with rich dark grays and blues
-- 🌓 **Toggleable dark/light mode** with smooth transitions
-- ⌨️ **Global shortcut**: `Cmd/Ctrl + Shift + D` to show/hide
-- 🔒 **Context isolation** for security
-- 📦 **Small bundle size** (~50MB)
-- 🎭 **Modern UI** with React Icons and Framer Motion animations
-- 🤖 **AI integration points** ready for future enhancements
+- **Fast JSON-based search** with debouncing and fuzzy matching
+- **Vim-inspired dark theme** with rich dark grays and blues
+- **Toggleable dark/light mode** with smooth transitions
+- **Global shortcut**: `Cmd/Ctrl + Shift + D` to show/hide
+- **Context isolation** for security
+- **Small bundle size** (~50MB)
+- **Modern UI** with React Icons and Framer Motion animations
+- **AI integration points** ready for future enhancements
 
 ## Project Structure
 
@@ -160,5 +160,3 @@ npm run build:linux
 MIT © [Skye]
 
 ---
-
-*Built with ❤️ using Electron, React, and TypeScript*

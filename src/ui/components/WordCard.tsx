@@ -14,10 +14,9 @@ interface WordCardProps {
     entry: DictionaryEntry;
     isExpanded: boolean;
     onToggle: () => void;
-    darkMode: boolean;
 }
 
-const WordCard: React.FC<WordCardProps> = ({ entry, isExpanded, onToggle, darkMode }) => {
+const WordCard: React.FC<WordCardProps> = ({ entry, isExpanded, onToggle }) => {
     return (
         <motion.div
             layout

@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import WordCard from '../components/WordCard';
 import EmptyState from '../components/EmptyState';
+import { PartialMatchCard } from '../components/PartialMatch';
+import { AnimatePresence } from 'framer-motion';
 
 interface DictionaryEntry {
     word: string;
     phonetic?: string;
     part_of_speech?: string;
     definition: string;
+    synonym?: string,
+    antonym?: string,
     example?: string;
 }
 
@@ -17,12 +21,7 @@ const HomePage: React.FC = () => {
     const [results, setResults] = useState<DictionaryEntry[]>([]);
     const [expandedWord, setExpandedWord] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
-
-    useEffect(() => {
-        // Apply dark mode class to body
-        document.body.classList.toggle('dark', darkMode);
-    }, [darkMode]);
+    const [PartialMatches, setPartialMatches] = useState<string[]|null>(null)
 
     const performSearch = async (searchQuery: string) => {
         if (!searchQuery.trim()) {
@@ -33,7 +32,7 @@ const HomePage: React.FC = () => {
 
         setIsLoading(true);
         try {
-            const results = await window.electronAPI.searchWord(searchQuery);
+            // const results = await window.electronAPI.searchWord(searchQuery);
             setResults([{
                 word: "hello",
                 phonetic: "/sdsi/",
@@ -50,8 +49,14 @@ const HomePage: React.FC = () => {
         }
     };
 
+    const hintOnType = async (searchQuery: string)=>{
+        setQuery(searchQuery)
+        setPartialMatches(["hell", "hello", "helloah"])
+    }
+
     const handleSearch = (value: string) => {
         setQuery(value);
+        setPartialMatches(null)
         performSearch(value);
     };
 
@@ -70,16 +75,22 @@ const HomePage: React.FC = () => {
     };
 
     return (
-        <div className={`min-h-screen ${darkMode ? 'bg-vimdark-100 text-white' : 'bg-gray-50 text-gray-900'}`}>
-            <Header darkMode={darkMode} onToggleDarkMode={() => setDarkMode(!darkMode)} />
-
+        <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-vimdark-100 dark:text-white">
+            <Header />
             <div className="p-4 max-w-4xl mx-auto">
+            <div className='relative'>
                 <SearchBar
                     query={query}
                     onSearch={handleSearch}
                     onClear={clearSearch}
-                    darkMode={darkMode}
+                    onType={hintOnType}
                 />
+                {(PartialMatches && PartialMatches.length>0)&&(
+                    <AnimatePresence>
+                        <PartialMatchCard searchPhrase={query} matchPhrases={PartialMatches} />
+                    </AnimatePresence>
+                )}
+                </div>
 
                 <div className="mt-2 text-right">
                     <kbd className="px-2 py-1 text-xs bg-gray-200 dark:bg-vimdark-400 rounded">Ctrl+K</kbd>
@@ -91,7 +102,7 @@ const HomePage: React.FC = () => {
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                         </div>
                     ) : results.length === 0 ? (
-                        <EmptyState query={query} darkMode={darkMode} />
+                        <EmptyState query={query} />
                     ) : (
                         <div className="space-y-4">
                             {results.map((entry) => (
@@ -100,7 +111,6 @@ const HomePage: React.FC = () => {
                                     entry={entry}
                                     isExpanded={expandedWord === entry.word}
                                     onToggle={() => toggleDetails(entry.word)}
-                                    darkMode={darkMode}
                                 />
                             ))}
                         </div>
