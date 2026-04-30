@@ -41,9 +41,33 @@ hr {
   color: inherit
 }
 
-
 .dark hr {
   color: #38383a !important;
+}
+
+.scrollbar-custom{
+  scrollbar-width: thin;
+  scrollbar-color: #dadae1 transparent;
+}
+
+.dark .scrollbar-custom{
+  scrollbar-color: var(--border) transparent;
+}
+
+
+/* Optional: Add transitions for more natural feel */
+.scroll-smooth:-webkit-scrollbar {
+  scroll-behavior: smooth;
+}
+
+.scrollbar-rounded::-webkit-scrollbar-thumb {
+  border-radius: 9999px; /* fully rounded */
+}
+
+
+/* Exclude elements with .scrollbar-default */
+.scrollbar-default::-webkit-scrollbar {
+  all: unset;
 }
 
 .pulse {

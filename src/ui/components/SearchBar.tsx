@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiX } from 'react-icons/fi';
 
@@ -6,18 +6,25 @@ interface SearchBarProps {
     query: string;
     onSearch: (value: string) => void;
     onClear: () => void;
-    onType: (value: string)=> void
+    onType: (value: string) => void
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ query, onSearch, onType, onClear }) => {
     const searchInputRef = useRef<HTMLInputElement>(null);
-    const [searchPhrase, setSearchPhrase] = useState<string|null>(null)
+    const [searchPhrase, setSearchPhrase] = useState<string | null>(null)
 
-    const onSearchSubmit = ()=> {
-        if(!searchPhrase) return
+    useEffect(() => {
+        setSearchPhrase(query);
+        (searchInputRef.current as HTMLInputElement).value = query;
+        onType(query);
+        (searchInputRef.current as HTMLInputElement).focus() //Keep input focused
+    }, [query])
+
+    const onSearchSubmit = () => {
+        if (!searchPhrase) return
         onSearch(searchPhrase)
     };
-    const onClearSearch=()=>{
+    const onClearSearch = () => {
         (searchInputRef.current as HTMLInputElement).value = ''
         onClear()
     }
@@ -25,7 +32,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ query, onSearch, onType, onClear 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Escape') {
             onClearSearch()
-        }else if(e.key==='Enter' || e.ctrlKey && e.key.toLocaleLowerCase()==='k'){
+        } else if (e.key === 'Enter' || e.ctrlKey && e.key.toLocaleLowerCase() === 'k') {
             onSearchSubmit()
         }
     };
@@ -39,7 +46,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ query, onSearch, onType, onClear 
                 ref={searchInputRef}
                 type="text"
                 defaultValue={query}
-                onChange={(e)=> {
+                onChange={(e) => {
                     setSearchPhrase(e.target.value)
                     onType(e.target.value)
                 }}

@@ -229,7 +229,7 @@ app.on('ready', async () => {
 
 app.whenReady().then(() => {
     dictionaryService = new DictionaryService();
-    dictionaryService.init();
+    // dictionaryService.init();
 
     createWindow();
 
@@ -256,14 +256,14 @@ app.on('window-all-closed', () => {
 
 app.on('will-quit', () => {
     globalShortcut.unregisterAll();
-    if (dictionaryService) dictionaryService.close();
+    // if (dictionaryService) dictionaryService.close();
 });
 
 // IPC handlers
-ipcMain.handle('search-word', async (_, query: string) => {
-    return dictionaryService.search(query);
+ipcMain.handle('get-hints', async (_, word: string) => {
+    return dictionaryService.hint(word);
 });
 
-ipcMain.handle('get-word-details', async (_, word: string) => {
-    return dictionaryService.getDetails(word);
+ipcMain.handle('search-word', async (_, query: string) => {
+    return dictionaryService.search(query);
 });

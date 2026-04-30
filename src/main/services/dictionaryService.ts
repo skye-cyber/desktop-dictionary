@@ -1,84 +1,56 @@
 import fs from 'fs';
 import path from 'path';
-import { app } from 'electron';
-import { DictionaryEntry } from '../../types/global';
+import { Dictionary, DictionaryEntry } from '../../types/global';
 import { DICTIONARY_DIR } from '../shared';
 
 class DictionaryService {
-    private data: DictionaryEntry|null = null;
-
-    init() {
-        const jsonPath = DICTIONARY_DIR
-
-        // Ensure directory exists
-        const jsonDir = path.dirname(jsonPath);
-        if (!fs.existsSync(jsonDir)) {
-            fs.mkdirSync(jsonDir, { recursive: true });
+    hint(word: string): string[] {
+        if (!word || word.trim().length === 0) return [];
+        const query = word.trim().toUpperCase()
+        const first_leter = word.toLowerCase().substring(0, 1) // File named after first letter of the word
+        const filepath = path.join(DICTIONARY_DIR, `${first_leter}.json`)
+        if (!fs.statfsSync(filepath)) {
+            return []
         }
-
-        // Copy bundled JSON if user JSON doesn't exist
-        if (!fs.existsSync(jsonPath)) {
-            const bundledJson = this.getBundledJsonPath();
-            if (fs.existsSync(bundledJson)) {
-                fs.copyFileSync(bundledJson, jsonPath);
-            } else {
-                // Create empty JSON structure
-                this.createEmptyJson(jsonPath);
-            }
+        const data: string = fs.readFileSync(filepath, { encoding: "utf8" })
+        let parsed_data: Dictionary
+        try {
+            parsed_data = JSON.parse(data)
+        } catch (err) {
+            return []
         }
+        // Filter keys
+        const keys = Object.keys(parsed_data)
+        const queryLength = query.length
 
-        // Load JSON data
-        const jsonData = fs.readFileSync(jsonPath, 'utf-8');
-        this.data = JSON.parse(jsonData);
+        const hintKeys: string[] = keys.filter(key => (key.length > queryLength && key.startsWith(query)))
+        return hintKeys.slice(0, 50) // 50 matches
     }
 
-    getJsonPath() {
-        const userData = app.getPath('userData');
-        return path.join(userData, 'dictionary.json');
-    }
+    search(query: string): DictionaryEntry | undefined {
+        if (!query || query.trim().length === 0) return;
 
-    getBundledJsonPath() {
-        return path.join(process.resourcesPath, 'dictionary.json');
-    }
+        const searchTerm = query.trim().toUpperCase();
+        const first_leter = searchTerm.toLowerCase().substring(0, 1) // File named after first letter of the word
+        const filepath = path.join(DICTIONARY_DIR, `${first_leter}.json`)
+        if (!fs.statfsSync(filepath)) {
+            return
+        }
+        const data: string = fs.readFileSync(filepath, { encoding: "utf8" })
+        let parsed_data: Dictionary
+        try {
+            parsed_data = JSON.parse(data)
+        } catch (err) {
+            console.log(err)
+            return
+        }
+        if (!parsed_data) return
+        const keys = Object.keys(parsed_data)
+        const matchKey: string = keys.filter(key => key === searchTerm)[0]
+        return (parsed_data as any)[matchKey] as DictionaryEntry
 
-    createEmptyJson(jsonPath: string) {
-        const emptyData: any = [];
-        fs.writeFileSync(jsonPath, JSON.stringify(emptyData, null, 2));
-    }
-
-    search(query: string): DictionaryEntry[] {
-        if (!query || query.trim().length === 0) return [];
-
-        const searchTerm = query.trim().toLowerCase();
-        
-        return this.data
-            .filter(entry => 
-                entry.word.toLowerCase().includes(searchTerm)
-            )
-            .sort((a, b) => {
-                // Exact matches first
-                if (a.word.toLowerCase() === searchTerm) return -1;
-                if (b.word.toLowerCase() === searchTerm) return 1;
-                
-                // Then starts with
-                if (a.word.toLowerCase().startsWith(searchTerm)) return -1;
-                if (b.word.toLowerCase().startsWith(searchTerm)) return 1;
-                
-                // Then alphabetical
-                return a.word.localeCompare(b.word);
-            })
-            .slice(0, 20);
-    }
-
-    getDetails(word: string): DictionaryEntry[] {
-        return this.data.filter(entry => 
-            entry.word.toLowerCase() === word.toLowerCase()
-        );
-    }
-
-    close() {
-        // No cleanup needed for JSON
     }
 }
 
+export const dictionaryService = new DictionaryService()
 export default DictionaryService;

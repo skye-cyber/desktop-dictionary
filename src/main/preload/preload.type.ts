@@ -1,5 +1,7 @@
-import path from 'path';
-import fs from 'fs';
+// import path from 'path';
+// import fs from 'fs';
+
+import { DictionaryEntry } from "../../types/global";
 
 
 export enum ThemeType {
@@ -8,7 +10,9 @@ export enum ThemeType {
 }
 
 export interface ApiType {
-
+    getHint: (query: string) => string[],
+    searchWord: (query: string) => DictionaryEntry | undefined,
+    // getWordDetails: (word: string) => any,
 }
 
 

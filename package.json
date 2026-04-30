@@ -5,8 +5,6 @@
   "main": "src/main/index.js",
   "scripts": {
     "test": "echo \"INFO: no test specified\" && exit 0",
-    "tailwind:build": "NODE_ENV=production npx tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --minify",
-    "tailwind:watch": "npx tailwindcss -i ./src/ui/styles/config.css -o ./src/ui/styles/global.css --watch",
     "preview": "vite preview",
     "dev": "concurrently \"npm:dev:*\"",
     "dev:react": "vite",
