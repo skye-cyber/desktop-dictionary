@@ -172,7 +172,7 @@ function setupMenu() {
 }
 
 // Set the app user model ID
-app.setAppUserModelId('com.intellidesk.app');
+app.setAppUserModelId('com.deskdict.app');
 
 app.on('ready', async () => {
     // setupIPC()

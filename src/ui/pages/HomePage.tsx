@@ -5,23 +5,14 @@ import WordCard from '../components/WordCard';
 import EmptyState from '../components/EmptyState';
 import { PartialMatchCard } from '../components/PartialMatch';
 import { AnimatePresence } from 'framer-motion';
-
-interface DictionaryEntry {
-    word: string;
-    phonetic?: string;
-    part_of_speech?: string;
-    definition: string;
-    synonym?: string,
-    antonym?: string,
-    example?: string;
-}
+import { DictionaryEntry } from '../../types/global';
 
 const HomePage: React.FC = () => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<DictionaryEntry[]>([]);
     const [expandedWord, setExpandedWord] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [PartialMatches, setPartialMatches] = useState<string[]|null>(null)
+    const [PartialMatches, setPartialMatches] = useState<string[] | null>(null)
 
     const performSearch = async (searchQuery: string) => {
         if (!searchQuery.trim()) {
@@ -34,7 +25,7 @@ const HomePage: React.FC = () => {
         try {
             // const results = await window.electronAPI.searchWord(searchQuery);
             setResults([{
-                word: "hello",
+                word: query,
                 phonetic: "/sdsi/",
                 part_of_speech: "ssp",
                 definition: "greetings",
@@ -49,7 +40,7 @@ const HomePage: React.FC = () => {
         }
     };
 
-    const hintOnType = async (searchQuery: string)=>{
+    const hintOnType = async (searchQuery: string) => {
         setQuery(searchQuery)
         setPartialMatches(["hell", "hello", "helloah"])
     }
@@ -78,18 +69,18 @@ const HomePage: React.FC = () => {
         <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-vimdark-100 dark:text-white">
             <Header />
             <div className="p-4 max-w-4xl mx-auto">
-            <div className='relative'>
-                <SearchBar
-                    query={query}
-                    onSearch={handleSearch}
-                    onClear={clearSearch}
-                    onType={hintOnType}
-                />
-                {(PartialMatches && PartialMatches.length>0)&&(
-                    <AnimatePresence>
-                        <PartialMatchCard searchPhrase={query} matchPhrases={PartialMatches} />
-                    </AnimatePresence>
-                )}
+                <div className='relative'>
+                    <SearchBar
+                        query={query}
+                        onSearch={handleSearch}
+                        onClear={clearSearch}
+                        onType={hintOnType}
+                    />
+                    {(PartialMatches && PartialMatches.length > 0) && (
+                        <AnimatePresence>
+                            <PartialMatchCard searchPhrase={query} matchPhrases={PartialMatches} />
+                        </AnimatePresence>
+                    )}
                 </div>
 
                 <div className="mt-2 text-right">
@@ -107,10 +98,10 @@ const HomePage: React.FC = () => {
                         <div className="space-y-4">
                             {results.map((entry) => (
                                 <WordCard
-                                    key={entry.word}
+                                    key={query}
                                     entry={entry}
-                                    isExpanded={expandedWord === entry.word}
-                                    onToggle={() => toggleDetails(entry.word)}
+                                    isExpanded={expandedWord === query}
+                                    onToggle={() => toggleDetails(query)}
                                 />
                             ))}
                         </div>

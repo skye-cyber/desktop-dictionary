@@ -1,20 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import { app } from 'electron';
-
-interface DictionaryEntry {
-    word: string;
-    phonetic?: string;
-    part_of_speech?: string;
-    definition: string;
-    example?: string;
-}
+import { DictionaryEntry } from '../../types/global';
+import { DICTIONARY_DIR } from '../shared';
 
 class DictionaryService {
-    private data: DictionaryEntry[] = [];
+    private data: DictionaryEntry|null = null;
 
     init() {
-        const jsonPath = this.getJsonPath();
+        const jsonPath = DICTIONARY_DIR
 
         // Ensure directory exists
         const jsonDir = path.dirname(jsonPath);
