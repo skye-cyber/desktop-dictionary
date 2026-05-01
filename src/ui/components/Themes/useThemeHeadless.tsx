@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
+import { globalEventBus } from '../../../core/Globals/eventBus';
 
 export const useTheme = () => {
     const [isDark, setIsDark] = useState(false);
     const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        globalEventBus.emit('theme:change', isDark)
+    }, [isDark])
 
     useEffect(() => {
         // Check for saved theme preference or system preference

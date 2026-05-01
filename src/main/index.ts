@@ -13,8 +13,8 @@ let iconPath: string
 
 function setAppIcon() {
     iconPath = isDev
-    ? path.join(__dirname, '../assets/deskdict.png') // for dev
-    : path.join(process.resourcesPath, './assets/deskdict.png'); // for prod;
+        ? path.join(__dirname, '../assets/deskdict.png') // for dev
+        : path.join(process.resourcesPath, './assets/deskdict.png'); // for prod;
 
     // Fallback to a generic icon or skip setting it
     if (!fs.existsSync(iconPath)) {
@@ -29,7 +29,7 @@ function createWindow(): BrowserWindow {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        minWidth: 600,
+        minWidth: 800,
         minHeight: 400,
         icon: iconPath,
         webPreferences: {
@@ -157,8 +157,8 @@ function setupMenu() {
                             height: 600,
                             webPreferences: {
                                 preload: path.join(__dirname, 'preload.js'),
-                                                            nodeIntegration: false,
-                                                            contextIsolation: true
+                                nodeIntegration: false,
+                                contextIsolation: true
                             }
                         });
                         docWindow.loadFile(path.join(__dirname, '../assets/documentation.html'));
@@ -176,6 +176,7 @@ app.setAppUserModelId('com.deskdict.app');
 
 app.on('ready', async () => {
     // setupIPC()
+    await CreateBaseDir()
 
     // Create and set the menu
     setupMenu()
@@ -201,12 +202,6 @@ app.on('ready', async () => {
             label: 'New window',
             click: () => {
                 createWindow()
-            }
-        },
-        {
-            label: 'Help',
-            click: () => {
-                //show_documentation()
             }
         },
         {
@@ -258,6 +253,16 @@ app.on('will-quit', () => {
     globalShortcut.unregisterAll();
     // if (dictionaryService) dictionaryService.close();
 });
+
+async function CreateBaseDir() {
+    try {
+        const baseDir = path.join(app.getPath('home'), '.deskdict');
+        fs.mkdirSync(baseDir, { recursive: true });
+    } catch (error) {
+        console.error('Error creating directories:', error);
+    }
+
+}
 
 // IPC handlers
 ipcMain.handle('get-hints', async (_, word: string) => {

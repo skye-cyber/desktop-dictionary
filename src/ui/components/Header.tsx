@@ -3,12 +3,11 @@ import { FiBookOpen, FiSun, FiMoon, FiSettings } from 'react-icons/fi';
 import { useTheme } from '../components/Themes/useThemeHeadless';
 
 interface HeaderProps {
-    darkMode: boolean;
-    onToggleDarkMode: () => void;
+    onSettingToggle: () => void;
 }
 
-const Header: React.FC = () => {
-    const {isDark, toggleTheme} = useTheme()
+const Header: React.FC<HeaderProps> = ({ onSettingToggle }) => {
+    const { isDark, toggleTheme } = useTheme()
 
     return (
         <header className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-vimdark-500">
@@ -16,7 +15,7 @@ const Header: React.FC = () => {
                 <FiBookOpen className="text-2xl text-blue-500" />
                 <h1 className="text-xl font-bold">Desktop Dictionary</h1>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 text-primary-200 dark:text-white">
                 <button
                     onClick={toggleTheme}
                     className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-vimdark-400"
@@ -25,6 +24,7 @@ const Header: React.FC = () => {
                     {isDark ? <FiSun /> : <FiMoon />}
                 </button>
                 <button
+                    onClick={onSettingToggle}
                     className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-vimdark-400"
                     title="Settings"
                 >
