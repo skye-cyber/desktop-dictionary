@@ -1,11 +1,9 @@
-import { app, BrowserWindow, ipcMain, globalShortcut, Tray, Menu } from 'electron';
+import { app, BrowserWindow, globalShortcut, Tray, Menu } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import DictionaryService from './services/dictionaryService';
 
 const isDev = process.env.NODE_ENV === 'development';
 let mainWindow: Electron.BrowserWindow | null = null;
-let dictionaryService: DictionaryService;
 
 // const isDev = !app.isPackaged;
 let isQuiting: Boolean = false
@@ -76,97 +74,23 @@ function createWindow(): BrowserWindow {
  * Set up application menu
  */
 function setupMenu() {
-    const template: Electron.MenuItemConstructorOptions[] = [
+    const template: Electron.MenuItemConstructorOptions[] = isDev ? [
         {
-            label: 'File',
-            submenu: [
-                { label: 'New', accelerator: 'CmdOrCtrl+N', click: () => console.log('New File') },
-                { label: 'Open', accelerator: 'CmdOrCtrl+O', click: () => console.log('Open File') },
-                { type: 'separator' },
-                { label: 'Exit', accelerator: 'CmdOrCtrl+Q', click: () => app.quit() }
-            ]
-        },
-        {
-            label: 'Edit',
-            submenu: [
-                { label: 'Undo', accelerator: 'CmdOrCtrl+Z', role: 'undo' },
-                { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
-                { type: 'separator' },
-                { label: 'Cut', accelerator: 'CmdOrCtrl+X', role: 'cut' },
-                { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
-                { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
-                { label: 'Select All', accelerator: 'CmdOrCtrl+A', role: 'selectAll' }
-            ]
-        },
-        {
-            label: 'View',
-            submenu: [
-                {
-                    label: 'Reload', role: "reload", accelerator: 'CmdOrCtrl+R', click: (_, focusedWindow) => {
-                        if (focusedWindow && 'reload' in focusedWindow) {
-                            const view = (focusedWindow as any).getFocusedWebContentsView?.();
-                            view?.webContents?.reload()
-                        }
-                    }
-
-                },
-                {
-                    label: 'Toggle Developer Tools',
-                    accelerator: 'F12',
-                    role: 'toggleDevTools',
-                    click: (_, focusedWindow) => {
-                        // Type guard for BaseWindow multi-view support
-                        if (focusedWindow && 'getWebContentsView' in focusedWindow) {
-                            const view = (focusedWindow as any).getFocusedWebContentsView?.();
-                            view?.webContents?.toggleDevTools();
-                        } else if ('webContents' in (focusedWindow as any)) {
-                            (focusedWindow as any).webContents.toggleDevTools();
-                        }
-                    },
-                },
-                { type: 'separator' },
-                { role: 'resetZoom' },
-                { role: 'zoomIn' },
-                { role: 'zoomOut' },
-                { type: 'separator' },
-                { role: 'togglefullscreen', accelerator: 'F11' }
-            ]
-        },
-        {
-            label: 'Window',
-            submenu: [
-                { label: 'Minimize', accelerator: 'CmdOrCtrl+M', role: 'minimize' },
-                { label: 'Close', accelerator: 'CmdOrCtrl+W', role: 'close' },
-                {
-                    label: 'Toggle Full Screen',
-                    role: 'togglefullscreen',       // built-in behavior
-                    accelerator: 'F11'              // explicit on all platforms
+            label: 'Dev Tools',
+            visible: false,
+            accelerator: 'F12',
+            role: 'toggleDevTools',
+            click: (_, focusedWindow) => {
+                // Type guard for BaseWindow multi-view support
+                if (focusedWindow && 'getWebContentsView' in focusedWindow) {
+                    const view = (focusedWindow as any).getFocusedWebContentsView?.();
+                    view?.webContents?.toggleDevTools();
+                } else if ('webContents' in (focusedWindow as any)) {
+                    (focusedWindow as any).webContents.toggleDevTools();
                 }
-            ]
-        },
-
-        {
-            label: 'Help',
-            submenu: [
-                { label: 'Learn More', click: () => require('electron').shell.openExternal('https://electronjs.org') },
-                {
-                    label: 'Documentation',
-                    click: () => {
-                        const docWindow = new BrowserWindow({
-                            width: 800,
-                            height: 600,
-                            webPreferences: {
-                                preload: path.join(__dirname, 'preload.js'),
-                                nodeIntegration: false,
-                                contextIsolation: true
-                            }
-                        });
-                        docWindow.loadFile(path.join(__dirname, '../assets/documentation.html'));
-                    }
-                }
-            ]
+            },
         }
-    ];
+    ] : [];
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 }
@@ -213,7 +137,7 @@ app.on('ready', async () => {
         }
     ]);
 
-    tray.setToolTip('DeskDict');
+    tray.setToolTip('Dictionary');
     tray.setContextMenu(contextMenu);
 
     // Restore window on tray double-click
@@ -223,9 +147,6 @@ app.on('ready', async () => {
 });
 
 app.whenReady().then(() => {
-    dictionaryService = new DictionaryService();
-    // dictionaryService.init();
-
     createWindow();
 
     // Global shortcut: Cmd/Ctrl+Shift+D to show/hide
@@ -239,19 +160,18 @@ app.whenReady().then(() => {
             }
         }
     });
-
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
-    });
 });
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
+
+// app.on('window-all-closed', () => {
+//     if (process.platform !== 'darwin') app.quit();
+// });
 
 app.on('will-quit', () => {
     globalShortcut.unregisterAll();
-    // if (dictionaryService) dictionaryService.close();
 });
 
 async function CreateBaseDir() {
@@ -263,12 +183,3 @@ async function CreateBaseDir() {
     }
 
 }
-
-// IPC handlers
-ipcMain.handle('get-hints', async (_, word: string) => {
-    return dictionaryService.hint(word);
-});
-
-ipcMain.handle('search-word', async (_, query: string) => {
-    return dictionaryService.search(query);
-});
