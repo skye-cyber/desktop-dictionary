@@ -1,7 +1,7 @@
 {
-  "name": "deskdict",
+  "name": "DeskDict",
   "version": "1.0.0",
-  "description": "A lightweight desktop dictionary app",
+  "description": "A lightweight english desktop dictionary app",
   "main": "src/main/index.js",
   "scripts": {
     "test": "echo \"INFO: no test specified\" && exit 0",
@@ -92,10 +92,6 @@
       "node_modules/better-sqlite3/**/*"
     ],
     "extraResources": [
-      {
-        "from": "assets/dictionary.db",
-        "to": "dictionary.db"
-      },
       {
         "from": "src/assets/",
         "to": "assets/"
@@ -195,27 +191,19 @@
       "icon": "src/icons",
       "maintainer": "Skye <swskye17@gmail.com>",
       "synopsis": "Desktop Distionary",
-      "description": "AI for all tasks, chat, ocr, image-generation, document analysis ..."
+      "description": "A simple english desktop dictionary application"
     },
     "appImage": {
       "artifactName": "${productName}-${version}-${arch}.AppImage"
     },
     "deb": {
       "priority": "optional",
-      "depends": [
-        "libappindicator1",
-        "libnotify-bin",
-        "libsecret-1-dev"
-      ],
       "artifactName": "${productName}_${version}_${arch}.deb"
     },
     "snap": {
       "summary": "Desktop Distionary Snap Package",
       "grade": "stable",
       "confinement": "classic",
-      "plugs": [
-        "audio-playback"
-      ],
       "artifactName": "${productName}_${version}_${arch}.snap"
     }
   }

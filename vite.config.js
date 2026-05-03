@@ -15,17 +15,22 @@ export default defineConfig({
     build: {
         outDir: resolve(__dirname, 'build'),
         emptyOutDir: true,
+        chunkSizeWarningLimit: 1000, // bump to 1000 kB
         rollupOptions: {
             input: resolve(__dirname, 'index.html'),
-            //input: resolve(__dirname, 'src/ui/'),
-            /*
-             * output: {
+            output: {
                 // Ensure relative paths in build
                 entryFileNames: 'assets/[name]-[hash].js',
                 chunkFileNames: 'assets/[name]-[hash].js',
                 assetFileNames: 'assets/[name]-[hash].[ext]'
+            },
+            manualChunks: {
+                // ← Split heavy deps into separate chunks
+                'vendor-react': ['react', 'react-dom'],
+                // Add other heavy libs here, e.g.:
+                // 'vendor-charts': ['recharts'],
+                // 'vendor-utils': ['lodash', 'moment'],
             }
-            */
         },
     },
     resolve: {
@@ -46,11 +51,12 @@ export default defineConfig({
         'process.env': {}
     },
     optimizeDeps: {
-        include: ['buffer'],
+        include: [
+            'buffer',
+            'crypto-browserify',
+            'process/browser',
+            'browserify-fs',
+        ],
         //force: true
-    },
-    // Ensure proper React configuration
-    esbuild: {
-        //jsxInject: `import React from 'react'`
     }
 });
