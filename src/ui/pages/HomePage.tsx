@@ -94,7 +94,7 @@ const HomePage: React.FC<HomePageProps> = ({ onSettingToggle }) => {
 //         setSearchedPhrase(query)
         try {
             // Simulate slight delay for UX smoothness if needed
-            const searchResult = window.dict.api.searchWord(searchQuery);
+            const searchResult = await window.dict.api.searchWord(searchQuery);
 
             // Staggered reveal animation
             await controls.start('hidden');
@@ -110,13 +110,13 @@ const HomePage: React.FC<HomePageProps> = ({ onSettingToggle }) => {
         }
     }, [controls]);
 
-    const hintOnType = useCallback((searchQuery: string) => {
+    const hintOnType = useCallback(async(searchQuery: string) => {
 //         setQuery(searchQuery);
         if (!searchQuery.trim()) {
             setPartialMatches(null);
             return;
         }
-        const hints = window.dict.api.getHint(searchQuery);
+        const hints = await window.dict.api.getHint(searchQuery);
         setPartialMatches(hints?.length ? hints : null);
     }, []);
 

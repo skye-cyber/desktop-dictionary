@@ -1,11 +1,10 @@
-import { app, BrowserWindow, globalShortcut, Tray, Menu } from 'electron';
+import { app, BrowserWindow, globalShortcut, Tray, Menu, ipcMain } from 'electron';
 import path from 'path';
 import fs from 'fs';
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = !app.isPackaged;
 let mainWindow: Electron.BrowserWindow | null = null;
 
-// const isDev = !app.isPackaged;
 let isQuiting: Boolean = false
 let iconPath: string
 
@@ -74,25 +73,34 @@ function createWindow(): BrowserWindow {
  * Set up application menu
  */
 function setupMenu() {
-    const template: Electron.MenuItemConstructorOptions[] = isDev ? [
-        {
-            label: 'Dev Tools',
-            visible: false,
-            accelerator: 'F12',
-            role: 'toggleDevTools',
-            click: (_, focusedWindow) => {
-                // Type guard for BaseWindow multi-view support
-                if (focusedWindow && 'getWebContentsView' in focusedWindow) {
-                    const view = (focusedWindow as any).getFocusedWebContentsView?.();
-                    view?.webContents?.toggleDevTools();
-                } else if ('webContents' in (focusedWindow as any)) {
-                    (focusedWindow as any).webContents.toggleDevTools();
-                }
-            },
-        }
-    ] : [];
-    const menu = Menu.buildFromTemplate(template);
+    const menu = Menu.buildFromTemplate([]);
     Menu.setApplicationMenu(menu);
+}
+
+const setShortcuts=()=>{
+    // F12 — Toggle DevTools
+    globalShortcut.register('F12', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        if (win) {
+            win.webContents.toggleDevTools();
+        }
+    });
+
+    // Ctrl+R / Cmd+R — Reload
+    globalShortcut.register('CommandOrControl+R', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        if (win) {
+            win.webContents.reload();
+        }
+    });
+
+    // Ctrl+Shift+R / Cmd+Shift+R — Force reload
+    globalShortcut.register('CommandOrControl+Shift+R', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        if (win) {
+            win.webContents.reloadIgnoringCache();
+        }
+    });
 }
 
 // Set the app user model ID
@@ -102,8 +110,11 @@ app.on('ready', async () => {
     // setupIPC()
     await CreateBaseDir()
 
+    setShortcuts()
     // Create and set the menu
     setupMenu()
+
+    ipcMain.handle('app:isPackaged', () => app.isPackaged)
 
     // Create the main window
     const mainWindow = createWindow();

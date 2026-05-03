@@ -3,12 +3,13 @@ import path from 'path';
 import { Dictionary, DictionaryEntry } from '../../types/global';
 import { DICTIONARY_DIR } from '../shared';
 
+
 class DictionaryService {
-    hint(word: string): string[] {
+    hint(word: string, isInDev: boolean): string[] {
         if (!word || word.trim().length === 0) return [];
         const query = word.trim().toUpperCase()
         const first_leter = word.toLowerCase().substring(0, 1) // File named after first letter of the word
-        const filepath = path.join(DICTIONARY_DIR, `${first_leter}.json`)
+        const filepath = path.join(DICTIONARY_DIR(isInDev), `${first_leter}.json`)
         if (!fs.statfsSync(filepath)) {
             return []
         }
@@ -27,12 +28,12 @@ class DictionaryService {
         return hintKeys.slice(0, 50) // 50 matches
     }
 
-    search(query: string): DictionaryEntry | undefined {
+    search(query: string, isInDev: boolean): DictionaryEntry | undefined {
         if (!query || query.trim().length === 0) return;
 
         const searchTerm = query.trim().toUpperCase();
         const first_leter = searchTerm.toLowerCase().substring(0, 1) // File named after first letter of the word
-        const filepath = path.join(DICTIONARY_DIR, `${first_leter}.json`)
+        const filepath = path.join(DICTIONARY_DIR(isInDev), `${first_leter}.json`)
         if (!fs.statfsSync(filepath)) {
             return
         }

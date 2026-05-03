@@ -26,8 +26,9 @@ export interface BookMark {
 }
 
 export interface ApiType {
-    getHint: (query: string) => string[];
-    searchWord: (query: string) => DictionaryEntry | undefined;
+    isPackaged: () => Promise<boolean>,
+    getHint: (query: string) => Promise<string[]>;
+    searchWord: (query: string) => Promise<DictionaryEntry | undefined>;
     readFile: (file: string) => Promise<string | null>;
     writeFile: (data: string, file: string) => Promise<boolean>;
     initBookmark: () => Promise<BookMark>;

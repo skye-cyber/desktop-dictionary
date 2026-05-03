@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { ApiType, BookMark, BookmarkEntry, BookmarkMetadata } from './preload.type';
 import { dictionaryService } from '../services/dictionaryService';
 import { DictionaryEntry } from '../../types/global';
@@ -6,17 +6,19 @@ import fs from 'fs';
 import { BOOKMARK_FILE } from '../shared';
 import { getformatDateTime } from '../utils/datetime';
 
-
 window.global = window;
 
 contextBridge.exposeInMainWorld('global', window);
 
 const api: ApiType = {
-    getHint: (word: string): string[] => {
-        return dictionaryService.hint(word);
+    isPackaged: async() => await ipcRenderer.invoke('app:isPackaged'),
+    getHint: async(word: string): Promise<string[]>=> {
+        const isInProd = await api.isPackaged()
+        return dictionaryService.hint(word, !isInProd);
     },
-    searchWord: (query: string): DictionaryEntry | undefined => {
-        return dictionaryService.search(query);
+    searchWord: async(query: string): Promise<DictionaryEntry | undefined> => {
+        const isInProd = await api.isPackaged()
+        return dictionaryService.search(query, !isInProd);
     },
     readFile: async (file: string): Promise<string | null> => {
         try {

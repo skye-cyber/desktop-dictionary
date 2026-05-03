@@ -215,7 +215,7 @@ export const PartialMatchCard: React.FC<MatchPhrasesProps> = ({
                 animate="visible"
                 exit="exit"
                 layout
-                className="absolute top-full left-0 right-1/3 mt-2 z-[30] w-full max-w-lg mx-auto"
+                className="absolute top-full left-0 right-1/3 mt-2 z-[50] w-full max-w-lg mx-auto"
             >
                 <div className="relative bg-white dark:bg-vimdark-200/95 backdrop-blur-xl rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/30 border border-gray-200 dark:border-vimdark-500/50 overflow-hidden">
                     {/* Header */}
