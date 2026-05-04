@@ -1,5 +1,5 @@
 {
-  "name": "DeskDict",
+  "name": "deskdict",
   "version": "1.0.0",
   "description": "A lightweight english desktop dictionary app",
   "main": "src/main/index.js",
@@ -82,7 +82,7 @@
   ],
   "build": {
     "appId": "com.deskdict.dictionary",
-    "productName": "deskdict",
+    "productName": "DeskDict",
     "directories": {
       "output": "dist"
     },

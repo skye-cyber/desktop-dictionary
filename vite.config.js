@@ -27,9 +27,6 @@ export default defineConfig({
             manualChunks: {
                 // ← Split heavy deps into separate chunks
                 'vendor-react': ['react', 'react-dom'],
-                // Add other heavy libs here, e.g.:
-                // 'vendor-charts': ['recharts'],
-                // 'vendor-utils': ['lodash', 'moment'],
             }
         },
     },
